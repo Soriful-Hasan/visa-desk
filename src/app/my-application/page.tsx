@@ -1,6 +1,8 @@
-"use client"; // required for client-side interactivity in Next.js App Router
+"use client";
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { User, FileText, MapPin, CheckCircle, AlertCircle, Save } from "lucide-react";
 
 type Applicant = {
   name: string;
@@ -16,12 +18,6 @@ type Progress = {
 };
 
 const ApplicantForm: React.FC = () => {
-  const [applicant, setApplicant] = useState<Applicant>({
-    name: "",
-    passport: "",
-    visaType: "",
-  });
-
   const [progress, setProgress] = useState<Progress>({
     formSubmitted: false,
     documentUploaded: false,
@@ -29,110 +25,308 @@ const ApplicantForm: React.FC = () => {
     interviewScheduled: false,
   });
 
-  // Load from localStorage
-  useEffect(() => {
-    const savedApplicant = localStorage.getItem("applicant");
-    const savedProgress = localStorage.getItem("progress");
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting, isDirty, isValid }
+  } = useForm<Applicant>({
+    defaultValues: {
+      name: "",
+      passport: "",
+      visaType: "",
+    },
+    mode: "onChange"
+  });
 
-    if (savedApplicant) setApplicant(JSON.parse(savedApplicant));
-    if (savedProgress) setProgress(JSON.parse(savedProgress));
-  }, []);
-
-  // Save applicant
+  // Load from localStorage (Note: In real implementation, use proper state management)
   useEffect(() => {
-    localStorage.setItem("applicant", JSON.stringify(applicant));
-  }, [applicant]);
+    const savedApplicant = JSON.parse(localStorage?.getItem("applicant") || "{}");
+    const savedProgress = JSON.parse(localStorage?.getItem("progress") || "{}");
 
-  // Save progress
+    if (savedApplicant.name) setValue("name", savedApplicant.name);
+    if (savedApplicant.passport) setValue("passport", savedApplicant.passport);
+    if (savedApplicant.visaType) setValue("visaType", savedApplicant.visaType);
+    
+    if (Object.keys(savedProgress).length > 0) {
+      setProgress(savedProgress);
+    }
+  }, [setValue]);
+
+  // Save to localStorage
+  const watchedValues = watch();
   useEffect(() => {
-    localStorage.setItem("progress", JSON.stringify(progress));
+    localStorage?.setItem("applicant", JSON.stringify(watchedValues));
+  }, [watchedValues]);
+
+  useEffect(() => {
+    localStorage?.setItem("progress", JSON.stringify(progress));
   }, [progress]);
 
-  const handleApplicantChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setApplicant(prev => ({ ...prev, [name]: value }));
+  const handleProgressChange = (stepName: keyof Progress) => {
+    setProgress(prev => ({ ...prev, [stepName]: !prev[stepName] }));
   };
 
-  const handleProgressChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setProgress(prev => ({ ...prev, [name]: checked }));
+  const onSubmit = (data: Applicant) => {
+    console.log("Form submitted:", data);
+    alert("Application details saved successfully!");
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    alert("Applicant details saved!");
-  };
+  const progressSteps = [
+    { key: "formSubmitted", label: "Form Submitted", icon: <FileText className="w-4 h-4" /> },
+    { key: "documentUploaded", label: "Documents Uploaded", icon: <User className="w-4 h-4" /> },
+    { key: "paymentCompleted", label: "Payment Completed", icon: <CheckCircle className="w-4 h-4" /> },
+    { key: "interviewScheduled", label: "Interview Scheduled", icon: <MapPin className="w-4 h-4" /> }
+  ];
+
+  const completedSteps = Object.values(progress).filter(Boolean).length;
+  const progressPercentage = (completedSteps / 4) * 100;
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-xl font-bold mb-4">Applicant Details</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={applicant.name}
-            onChange={handleApplicantChange}
-            className="w-full border px-3 py-2 rounded-md"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Passport No.</label>
-          <input
-            type="text"
-            name="passport"
-            value={applicant.passport}
-            onChange={handleApplicantChange}
-            className="w-full border px-3 py-2 rounded-md"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Visa Type</label>
-          <select
-            name="visaType"
-            value={applicant.visaType}
-            onChange={handleApplicantChange}
-            className="w-full border px-3 py-2 rounded-md"
-            required
-          >
-            <option value="">Select Visa Type</option>
-            <option value="tourist">Tourist</option>
-            <option value="student">Student</option>
-            <option value="work">Work</option>
-          </select>
-        </div>
-
-        <h3 className="text-lg font-semibold mt-4">Application Progress</h3>
-        <div className="space-y-2">
-          {Object.keys(progress).map((step) => (
-            <div key={step}>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name={step}
-                  checked={progress[step as keyof Progress]}
-                  onChange={handleProgressChange}
-                  className="w-4 h-4"
-                />
-                <span>{step.replace(/([A-Z])/g, " $1")}</span>
-              </label>
-            </div>
-          ))}
-        </div>
-
-        <button
-          type="submit"
-          className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-        >
-          Save
-        </button>
-      </form>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 transition-colors duration-300">
+  <div className="max-w-7xl mx-auto">
+    {/* Header */}
+    <div className="text-center mb-8">
+      <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+        Our <span className="text-blue-600 dark:text-blue-400">Visa Application</span>
+      </h2>
+      <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+        Fill out the form below to start your visa application process. Our team will assist you every step of the way.
+      </p>
     </div>
+
+    {/* Progress Overview */}
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 transition-colors duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Application Progress</h3>
+        <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+          {completedSteps}/4 completed
+        </span>
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-6">
+        <div 
+          className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+          style={{ width: `${progressPercentage}%` }}
+        ></div>
+      </div>
+
+      {/* Progress Steps */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {progressSteps.map((step) => (
+          <div key={step.key} className="flex items-center space-x-3">
+            <button
+              type="button"
+              onClick={() => handleProgressChange(step.key as keyof Progress)}
+              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-colors ${
+                progress[step.key as keyof Progress]
+                  ? "bg-green-500 border-green-500 text-white"
+                  : "border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-blue-500"
+              }`}
+            >
+              {progress[step.key as keyof Progress] ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                step.icon
+              )}
+            </button>
+            <span
+              className={`text-sm font-medium ${
+                progress[step.key as keyof Progress]
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-gray-600 dark:text-gray-300"
+              }`}
+            >
+              {step.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Main Form */}
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 transition-colors duration-300">
+      <div className="space-y-6">
+        {/* Name Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Full Name *
+          </label>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: "Name is required",
+              minLength: {
+                value: 2,
+                message: "Name must be at least 2 characters"
+              },
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: "Name should only contain letters"
+              }
+            }}
+            render={({ field }) => (
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                </div>
+                <input
+                  {...field}
+                  type="text"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:bg-gray-900 dark:text-white ${
+                    errors.name 
+                      ? "border-red-300 focus:ring-red-500"
+                      : "border-gray-300 dark:border-gray-600"
+                  }`}
+                  placeholder="Enter your full name"
+                />
+                {errors.name && (
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                  </div>
+                )}
+              </div>
+            )}
+          />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" />
+              {errors.name.message}
+            </p>
+          )}
+        </div>
+
+        {/* Passport Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Passport Number *
+          </label>
+          <Controller
+            name="passport"
+            control={control}
+            rules={{
+              required: "Passport number is required",
+              pattern: {
+                value: /^[A-Z0-9]{6,12}$/,
+                message: "Please enter a valid passport number (6-12 alphanumeric characters)"
+              }
+            }}
+            render={({ field }) => (
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FileText className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                </div>
+                <input
+                  {...field}
+                  type="text"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors uppercase dark:bg-gray-900 dark:text-white ${
+                    errors.passport 
+                      ? "border-red-300 focus:ring-red-500" 
+                      : "border-gray-300 dark:border-gray-600"
+                  }`}
+                  placeholder="Enter passport number"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                />
+                {errors.passport && (
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                  </div>
+                )}
+              </div>
+            )}
+          />
+          {errors.passport && (
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" />
+              {errors.passport.message}
+            </p>
+          )}
+        </div>
+
+        {/* Visa Type Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Visa Type *
+          </label>
+          <Controller
+            name="visaType"
+            control={control}
+            rules={{ required: "Please select a visa type" }}
+            render={({ field }) => (
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                </div>
+                <select
+                  {...field}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors appearance-none bg-white dark:bg-gray-900 dark:text-white ${
+                    errors.visaType 
+                      ? "border-red-300 focus:ring-red-500" 
+                      : "border-gray-300 dark:border-gray-600"
+                  }`}
+                >
+                  <option value="">Select Visa Type</option>
+                  <option value="tourist">Tourist Visa</option>
+                  <option value="student">Student Visa</option>
+                  <option value="work">Work Visa</option>
+                  <option value="business">Business Visa</option>
+                  <option value="family">Family Visa</option>
+                </select>
+                {errors.visaType && (
+                  <div className="absolute inset-y-0 right-8 flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                  </div>
+                )}
+              </div>
+            )}
+          />
+          {errors.visaType && (
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" />
+              {errors.visaType.message}
+            </p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="pt-6">
+          <button
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !isValid}
+            className={`w-full flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+              isSubmitting || !isValid
+                ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl"
+            }`}
+          >
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5 mr-2" />
+                Save Application
+              </>
+            )}
+          </button>
+          
+          {isDirty && (
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+              You have unsaved changes
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   );
 };
 
