@@ -1,4 +1,0 @@
-[
-  { "id": 1, "name": "Student Visa", "description": "For international students", "processingTime": "15 days" },
-  { "id": 2, "name": "Tourist Visa", "description": "For travel purposes", "processingTime": "7 days" }
-]

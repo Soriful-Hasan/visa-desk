@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Tourist Visa - USA",
+    "description": "Short-term visa for travel and tourism in the United States.",
+    "processingTime": "15-20 business days"
+  },
+  {
+    "id": 2,
+    "name": "Student Visa - UK",
+    "description": "For students enrolled in a UK educational institution.",
+    "processingTime": "20-25 business days"
+  },
+  {
+    "id": 3,
+    "name": "Work Visa - Canada",
+    "description": "For individuals who have secured a job in Canada.",
+    "processingTime": "30-40 business days"
+  },
+  {
+    "id": 4,
+    "name": "Business Visa - Australia",
+    "description": "For short-term business visits and conferences.",
+    "processingTime": "10-15 business days"
+  }
+]
