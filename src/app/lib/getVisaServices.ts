@@ -1,7 +1,7 @@
 
 export async function getVisaServices() {
   try {
-    const res = await fetch('/Services.json', {
+    const res = await fetch('/service.json', {
       cache: 'no-store',
     });
     if (!res.ok) {

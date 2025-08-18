@@ -25,7 +25,7 @@ export default function VisaServices() {
   );
 
   return (
-    <section className="py-20 px-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <section id="our-service" className="py-20 px-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
   <div className="container mx-auto max-w-7xl">
     {/* Header */}
     <div className="text-center mb-16">

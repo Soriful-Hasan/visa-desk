@@ -1,8 +1,14 @@
+'use client';
 import React from 'react';
 import { ArrowRight, CheckCircle, Globe, Clock, Shield } from 'lucide-react';
+import Link from 'next/link';
 
 
 const HeroSection = () => {
+    const handleScroll = () => {
+    const section = document.getElementById("our-service");
+    section?.scrollIntoView({ behavior: "smooth" });
+  };
   return (
      <section className="bg-blue-50 dark:bg-gray-900 overflow-hidden transition-colors duration-300">
   <div className="container mx-auto px-6 py-20 lg:py-24">
@@ -45,19 +51,19 @@ const HeroSection = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/visa-services"
-            className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:bg-blue-700 dark:hover:bg-blue-500 transition-colors duration-200 flex items-center justify-center"
+          <button
+             onClick={handleScroll}
+            className="bg-blue-600 cursor-pointer text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:bg-blue-700 dark:hover:bg-blue-500 transition-colors duration-200 flex items-center justify-center"
           >
             Explore Services
             <ArrowRight className="w-5 h-5 ml-2" />
-          </a>
-          <a
-            href="/contact"
+          </button>
+          <Link
+            href="/my-application"
             className="border-2 border-blue-600 dark:border-gray-300 text-blue-600 dark:text-gray-200 px-8 py-4 rounded-xl font-semibold hover:bg-blue-600 hover:text-white dark:hover:bg-gray-700 dark:hover:text-white transition-colors duration-200 flex items-center justify-center"
           >
-            Get Consultation
-          </a>
+            My Application
+          </Link>
         </div>
       </div>
       

@@ -1,9 +1,10 @@
 'use client'
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, Plane, X } from 'lucide-react';
 import Link from 'next/link';
 import ToggleDarkMode from './ToggleDarkMode';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,24 +16,24 @@ const Navbar = () => {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/my-application", label: "My Application" },
-    { href: "/contact", label: "Contact" }
   ];
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gray-100 dark:border-gray-700">
   <div className="container mx-auto px-4 sm:px-6 lg:px-8">
     <div className="flex justify-between items-center h-16">
-      {/* Logo */}
-      <div className="flex-shrink-0">
+   <div className="flex-shrink-0 flex items-center space-x-2">
+      
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">V</span>
-          </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent dark:text-white">
-            VisaEase
-          </span>
+        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm">
+         <Image src="/global.png"  alt="Logo" width={24}  height={24} />
+        </div>
+        <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent dark:text-white">
+          VisaEase
+        </span>
         </Link>
-      </div>
+    
+    </div>
 
       {/* Desktop Navigation */}
       <div className="hidden md:block">

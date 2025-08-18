@@ -22,5 +22,17 @@
     "name": "Business Visa - Australia",
     "description": "For short-term business visits and conferences.",
     "processingTime": "10-15 business days"
-  }
+  },
+  {
+  "id": 5,
+  "name": "Tourist Visa - Canada",
+  "description": "For leisure travel, sightseeing, and family visits in Canada.",
+  "processingTime": "7-12 business days"
+},
+{
+  "id": 7,
+  "name": "Student Visa - Malaysia",
+  "description": "For international students enrolling in Malaysian universities or colleges.",
+  "processingTime": "10-18 business days"
+}
 ]
