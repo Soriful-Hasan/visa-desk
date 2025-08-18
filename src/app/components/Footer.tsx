@@ -1,16 +1,10 @@
 import React from 'react'
 import { 
-  Shield, 
   Phone, 
   Mail, 
   MapPin, 
   Clock, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin,
   ArrowRight,
-  Plane,
   Globe,
   Users,
   Award,
