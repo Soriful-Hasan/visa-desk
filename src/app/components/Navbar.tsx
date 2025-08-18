@@ -27,7 +27,7 @@ const Navbar = () => {
             <Image src="/global.png" alt="Logo" width={24} height={24} />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            VisaEase
+            VisaDesk
           </span>
         </Link>
       </div>

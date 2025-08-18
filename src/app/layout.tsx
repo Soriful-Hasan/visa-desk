@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Visa Ease Simplifying Your Visa Application Process",
-  description: "Visa Ease helps you manage your visa applications easily and efficiently. Track, apply, and get updates on all your visa services in one place.",
+  title: "Visa Desk Simplifying Your Visa Application Process",
+  description: "Visa Desk helps you manage your visa applications easily and efficiently. Track, apply, and get updates on all your visa services in one place.",
 }
 
 export default function RootLayout({
