@@ -4,7 +4,7 @@ Visa Desk is a modern web application built with **Next.js**, **Tailwind CSS**, 
 
 ---
 
-🔗Live Link - https://visa-desk.netlify.app/
+🔗Live Link - https://visa-desk.vercel.app/
 
 ## Features
 
