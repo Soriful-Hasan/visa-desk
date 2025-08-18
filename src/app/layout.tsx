@@ -7,6 +7,7 @@ import HeroSection from "./components/Hero";
 import { ThemeProvider } from "next-themes";
 import { Providers } from "./provider";
 import { Toaster } from "react-hot-toast";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,12 +34,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        <Providers>
+       <nav>
+         <Navbar />
+         </nav>
         {children}
         <Toaster position="top-right" reverseOrder={false} />
-        </Providers>
-         
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );
